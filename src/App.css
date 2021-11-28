@@ -1,3 +1,8 @@
+*{
+  margin:0;
+  padding:0;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +40,58 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.navbar {
+  background-color: #233142;
+}
+
+.logo {
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  font-weight: 700;
+  font-size: xx-large;
+  margin-left: 10%;
+}
+
+.nav-links {
+  color: #e3e3e3;
+  margin-left: 1.2em;
+  font-size: large;
+  font-weight: 500;
+}
+
+.right-aligned {
+  justify-content: flex-end;
+  margin-right: 10%;
+}
+
+.active .nav-links {
+  color: #f95959;
+}
+.navbar{
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+
+.form-inline{
+  width: 50%;
+}
+
+.form-group{
+  width: 50%;
+}
+
+.input-group {
+  width: 50% !important;
+}
+
+tr {
+  border: 5px solid #233142;
+}
+
+h4{
+  font-family: 'Bitter', serif;
+  font-weight: 800 !important;
 }

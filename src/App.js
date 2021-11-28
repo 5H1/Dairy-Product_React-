@@ -11,6 +11,7 @@ import data from "./pages/CollectionCenterData";
 import EnData from "./pages/EntryData";
 import ExData from "./pages/ExitData";
 import PcData from "./pages/PackingData";
+import {Navbar, Nav, NavDropdown, Form, FormControl, Button} from 'react-bootstrap';
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 
 function Home() {
@@ -19,7 +20,6 @@ function Home() {
 
 const App = () => {
   var val = "Nothing";
-  
 
   function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
@@ -77,9 +77,7 @@ const App = () => {
 
   async function generateQRExit() {
     const accounts = await web3.eth.getAccounts();
-    const totalData = await ExData.methods
-      .export()
-      .call({ from: accounts[0] });
+    const totalData = await ExData.methods.export().call({ from: accounts[0] });
     const uTime = timeConverter(totalData.split(" ").pop());
     const ExVal = totalData.split(" ").slice(0, -1).concat(uTime).join(" ");
     val += ExVal;
@@ -95,34 +93,73 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <div>
-        <Link style={{color:"red"}}to="/">Home</Link>
-        <Link to="/CollectionCenter">CollectionCenter</Link>
-        <Link to="/Entry">Entry</Link>
-        <Link to="/Packing">Packing</Link>
-      </div>
-      <Routes>
-        <Route exact path="/" component={Home} />
-        <Route
-          path="/CollectionCenter"
-          element={<CollectionCenter temp={() => generateQR()} />}
-        />
-        <Route
-          path="/Entry"
-          element={
-            <Entry
-              temp={() => generateQREntry()}
-              temp2={() => generateQRExit()}
-            />
-          }
-        />
-        <Route
-          path="/Packing"
-          element={<Packing temp={(res) => generateQRDelivery(res)} />}
-        />
-      </Routes>
-    </Router>
+    <div>
+      <Navbar variant="dark" expand="md" className="navbar">
+        <div className="container-fluid">
+          <Navbar.Brand>
+            <div className="logo">Dairy Blockchain</div>
+          </Navbar.Brand>
+
+          {/* For Mobile View */}
+          {/* <Navbar.Toggle /> */}
+
+          <Navbar.Collapse className="right-aligned">
+            <Nav
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "right",
+              }}
+            >
+              <Nav.Link href="/" activeClassName="active">
+                <div className="nav-links">Home</div>
+              </Nav.Link>
+              <Nav.Link href="/CollectionCenter" activeClassName="active">
+                <div className="nav-links">Collection Center</div>
+              </Nav.Link>
+              <Nav.Link href="/Entry" activeClassName="active">
+                <div className="nav-links">Processing Center</div>
+              </Nav.Link>
+              <Nav.Link href="/Packing" activeClassName="active">
+                <div className="nav-links">Pack and Delivery</div>
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </div>
+      </Navbar>
+
+
+      <Router>
+        {/* <div>
+          <Link style={{ color: "red" }} to="/">
+            Home
+          </Link>
+          <Link to="/CollectionCenter">CollectionCenter</Link>
+          <Link to="/Entry">Entry</Link>
+          <Link to="/Packing">Packing</Link>
+        </div> */}
+        <Routes>
+          <Route exact path="/" component={Home} />
+          <Route
+            path="/CollectionCenter"
+            element={<CollectionCenter temp={() => generateQR()} />}
+          />
+          <Route
+            path="/Entry"
+            element={
+              <Entry
+                temp={() => generateQREntry()}
+                temp2={() => generateQRExit()}
+              />
+            }
+          />
+          <Route
+            path="/Packing"
+            element={<Packing temp={(res) => generateQRDelivery(res)} />}
+          />
+        </Routes>
+      </Router>
+    </div>
   );
 };
 

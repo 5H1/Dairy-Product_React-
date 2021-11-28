@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import QRCode from "react-qr-code";
 import web3 from "./web3";
 import data from "./CollectionCenterData";
+import { Form, Button, InputGroup, FormControl, Table } from "react-bootstrap";
+import "../App.css";
 
 function CollectionCenter(props) {
   // async componentDidMount() {
@@ -16,6 +18,7 @@ function CollectionCenter(props) {
   var [message, setMessage] = useState();
   var [id, setId] = useState();
   var [history, setHistory] = useState("");
+  var [header, setHeader] = useState("");
   var val;
 
   useEffect(async () => {
@@ -41,16 +44,47 @@ function CollectionCenter(props) {
     const accounts = await web3.eth.getAccounts();
     const res = await data.methods.getDataByID(id).call({ from: accounts[0] });
     setHistory([]);
+    console.log(res);
+
+    const val = (
+      <Table
+        striped
+        bordered
+        hover
+        style={{ width: "600px", marginLeft: "30px" }}
+      >
+        <thead>
+          <tr>
+            <th> Time </th>
+            <th> Quantity </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {res.map((row, pos) => {
+            return (
+              <tr>
+                <td>{timeConverter(row[0])}</td>
+                <td>{row[1]}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    );
+
     if (res.length == 0) {
       setHistory("No Data Found");
     } else {
       var temp = "";
       res.forEach((element) => {
         temp +=
-          timeConverter(element[0]) + " : " + element[1] + " litres" + " | ";
+          timeConverter(element[0]) + ":  " + element[1] + " litres" + "\n";
       });
       // console.log(temp);
-      setHistory(temp);
+
+      setHistory(val);
+      // setHistory(val);
     }
   };
 
@@ -101,31 +135,78 @@ function CollectionCenter(props) {
           Total Milk : {milk}
         </p>
         <hr />
-        <form onSubmit={onEnter}>
-          <div>
-            <label>Enter ID of the farmer </label>
-            <input
+        <h4 style={{ textAlign: "center" }}>Add Milk</h4>
+        <Form
+          style={{
+            width: 700,
+            padding: 30,
+          }}
+          onSubmit={onEnter}
+        >
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">Farmer ID</InputGroup.Text>
+            <FormControl
+              placeholder="Farmer ID"
+              aria-label="Farmer ID"
               value={farmerId}
               onChange={(e) => setFarmerId(e.target.value)}
             />
-            <br />
-            <label class="special">Enter milk quantity </label>
-            <input
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">Milk Quantity</InputGroup.Text>
+            <FormControl
+              placeholder="Username"
+              aria-label="Username"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
             />
-            <br />
-            <button>ENTER</button>
-          </div>
-        </form>
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">Fat percentage</InputGroup.Text>
+            <FormControl
+              placeholder="Username"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </InputGroup>
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
         <p style={{ color: "green" }}>{message}</p>
-        <form onSubmit={getHistory}>
+        <hr />
+
+        <h4 style={{ textAlign: "center" }}>Get history of the farmer</h4>
+
+        <Form
+          style={{ width: 700, padding: 30 }}
+          onSubmit={getHistory}
+        >
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">Farmer ID</InputGroup.Text>
+            <FormControl
+              placeholder="Farmer ID"
+              aria-label="Farmer ID"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+            />
+          </InputGroup>
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+
+        {/* <form onSubmit={getHistory}>
           <h4>Get history of a farmer</h4>
           <label>Enter ID of the farmer </label>
           <input value={id} onChange={(e) => setId(e.target.value)} />
           <br />
           <button>SUBMIT</button>
-        </form>
+        </form> */}
         <div id="found">{history}</div>
         <hr />
         <button onClick={props.temp}>EXPORT</button>
