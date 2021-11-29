@@ -84,7 +84,7 @@
 }
 
 .input-group {
-  width: 50% !important;
+  width: 60% !important;
 }
 
 tr {
@@ -92,6 +92,16 @@ tr {
 }
 
 h4{
-  font-family: 'Bitter', serif;
+  font-family: serif;
   font-weight: 800 !important;
+}
+
+#qrcode{
+  align-items: center;
+  margin-left: 630px;
+}
+
+.Ebutton{
+  margin-left: 10px;
+  margin-right: 10px;
 }

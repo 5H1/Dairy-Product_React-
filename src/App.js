@@ -10,8 +10,15 @@ import web3 from "./pages/web3";
 import data from "./pages/CollectionCenterData";
 import EnData from "./pages/EntryData";
 import ExData from "./pages/ExitData";
-import PcData from "./pages/PackingData";
-import {Navbar, Nav, NavDropdown, Form, FormControl, Button} from 'react-bootstrap';
+import PackData from "./pages/PackingData";
+import {
+  Navbar,
+  Nav,
+  NavDropdown,
+  Form,
+  FormControl,
+  Button,
+} from "react-bootstrap";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 
 function Home() {
@@ -19,7 +26,7 @@ function Home() {
 }
 
 const App = () => {
-  var val = "Nothing";
+  var str="";
 
   function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
@@ -54,15 +61,14 @@ const App = () => {
       .exportMilk()
       .call({ from: accounts[0] });
     const uTime = timeConverter(totalData.split(" ").pop());
-    // console.log(uTime);
-    val = totalData.split(" ").slice(0, -1).concat(uTime).join(" ");
+    const val = totalData.split(" ").slice(0, -1).concat(uTime).join(" ");
+    await EnData.methods.setPrevData(val).send({ from: accounts[0] });
+    // const temp = await EnData.methods.prevData().call({ from: accounts[0] });
     ReactDOM.render(<QRCode value={val} />, document.getElementById("qrcode"));
     await data.methods.setMilkZero().send({ from: accounts[0] });
   }
 
   async function generateQREntry() {
-    // console.log(val);
-    // console.log(typeof val);
     const accounts = await web3.eth.getAccounts();
     const totalData = await EnData.methods
       .sendInto()
@@ -70,9 +76,9 @@ const App = () => {
     // console.log(totalData);
     const uTime = timeConverter(totalData.split(" ").pop());
     const Enval = totalData.split(" ").slice(0, -1).concat(uTime).join(" ");
-    val += Enval;
-    ReactDOM.render(<QRCode value={val} />, document.getElementById("qrcode"));
-    // await data.methods.setMilkZero().send({ from: accounts[0] });
+    str = Enval;
+    ReactDOM.render(<QRCode value={Enval} />, document.getElementById("qrcode"));
+    await EnData.methods.setMilktoZero().send({ from: accounts[0] });
   }
 
   async function generateQRExit() {
@@ -80,16 +86,18 @@ const App = () => {
     const totalData = await ExData.methods.export().call({ from: accounts[0] });
     const uTime = timeConverter(totalData.split(" ").pop());
     const ExVal = totalData.split(" ").slice(0, -1).concat(uTime).join(" ");
-    val += ExVal;
-    ReactDOM.render(<QRCode value={val} />, document.getElementById("qrcode"));
+    str += ExVal;
+    // console.log(str);
+    ReactDOM.render(<QRCode value={str} />, document.getElementById("qrcode"));
+    await PackData.methods.setPrevData(str).send({ from: accounts[0] });
+    await ExData.methods.setMilktoZero().send({ from: accounts[0] });
   }
 
   async function generateQRDelivery(res) {
     // console.log(res);
     const uTime = timeConverter(res.split(" ").pop());
     const DeVal = res.split(" ").slice(0, -1).concat(uTime).join(" ");
-    val += DeVal;
-    ReactDOM.render(<QRCode value={val} />, document.getElementById("qrcodee"));
+    ReactDOM.render(<QRCode value={DeVal} />, document.getElementById("qrcode"));
   }
 
   return (
@@ -127,7 +135,6 @@ const App = () => {
           </Navbar.Collapse>
         </div>
       </Navbar>
-
 
       <Router>
         {/* <div>

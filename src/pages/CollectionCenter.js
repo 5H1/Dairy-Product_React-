@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import QRCode from "react-qr-code";
 import web3 from "./web3";
 import data from "./CollectionCenterData";
 import { Form, Button, InputGroup, FormControl, Table } from "react-bootstrap";
@@ -13,6 +11,7 @@ function CollectionCenter(props) {
 
   var [centerId, setCenterId] = useState();
   var [milk, setMilk] = useState();
+  var [fat, setFat] = useState();
   var [farmerId, setFarmerId] = useState();
   var [quantity, setQuantity] = useState();
   var [message, setMessage] = useState();
@@ -22,11 +21,11 @@ function CollectionCenter(props) {
   var val;
 
   useEffect(async () => {
-    var id = await data.methods.centerId().call();
     var TM = await data.methods.getTotalQuantity().call();
-    // console.log(TM);
-    setCenterId(id);
     setMilk(TM);
+    
+    var id = await data.methods.centerId().call();
+    setCenterId(id);
   }, []);
 
   const onEnter = async (event) => {
@@ -34,7 +33,7 @@ function CollectionCenter(props) {
     const accounts = await web3.eth.getAccounts();
     // console.log(accounts[0]);
     setMessage("Please Wait...");
-    await data.methods.addMilk(farmerId, quantity).send({ from: accounts[0] });
+    await data.methods.addMilk(farmerId, quantity, fat).send({ from: accounts[0] });
     setMessage("Milk Added Successfully ✓✓");
   };
 
@@ -44,7 +43,7 @@ function CollectionCenter(props) {
     const accounts = await web3.eth.getAccounts();
     const res = await data.methods.getDataByID(id).call({ from: accounts[0] });
     setHistory([]);
-    console.log(res);
+    // console.log(res);
 
     const val = (
       <Table
@@ -57,6 +56,7 @@ function CollectionCenter(props) {
           <tr>
             <th> Time </th>
             <th> Quantity </th>
+            <th> Fat </th>
           </tr>
         </thead>
 
@@ -66,6 +66,7 @@ function CollectionCenter(props) {
               <tr>
                 <td>{timeConverter(row[0])}</td>
                 <td>{row[1]}</td>
+                <td>{row[2]}</td>
               </tr>
             );
           })}
@@ -73,19 +74,7 @@ function CollectionCenter(props) {
       </Table>
     );
 
-    if (res.length == 0) {
-      setHistory("No Data Found");
-    } else {
-      var temp = "";
-      res.forEach((element) => {
-        temp +=
-          timeConverter(element[0]) + ":  " + element[1] + " litres" + "\n";
-      });
-      // console.log(temp);
-
-      setHistory(val);
-      // setHistory(val);
-    }
+    setHistory(val);
   };
 
   function timeConverter(UNIX_timestamp) {
@@ -146,7 +135,7 @@ function CollectionCenter(props) {
           <InputGroup className="mb-3">
             <InputGroup.Text id="basic-addon1">Farmer ID</InputGroup.Text>
             <FormControl
-              placeholder="Farmer ID"
+              placeholder="Enter ID of farmer"
               aria-label="Farmer ID"
               value={farmerId}
               onChange={(e) => setFarmerId(e.target.value)}
@@ -156,8 +145,8 @@ function CollectionCenter(props) {
           <InputGroup className="mb-3">
             <InputGroup.Text id="basic-addon1">Milk Quantity</InputGroup.Text>
             <FormControl
-              placeholder="Username"
-              aria-label="Username"
+              placeholder="Enter Milk Quantity"
+              aria-label="Quantity"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
             />
@@ -166,9 +155,11 @@ function CollectionCenter(props) {
           <InputGroup className="mb-3">
             <InputGroup.Text id="basic-addon1">Fat percentage</InputGroup.Text>
             <FormControl
-              placeholder="Username"
+              placeholder="5%"
               aria-label="Username"
               aria-describedby="basic-addon1"
+              value={fat}
+              onChange={(e) => setFat(e.target.value)}
             />
           </InputGroup>
 
@@ -209,7 +200,7 @@ function CollectionCenter(props) {
         </form> */}
         <div id="found">{history}</div>
         <hr />
-        <button onClick={props.temp}>EXPORT</button>
+        <Button onClick={props.temp} style={{alignItems:"center", marginLeft:"30px"}}>EXPORT</Button>
         <br />
         <div id="qrcode"></div>
       </div>

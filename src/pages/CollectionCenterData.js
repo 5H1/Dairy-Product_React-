@@ -1,7 +1,7 @@
 import web3 from "./web3";
 // import JSON from "JSON";
 
-const address = "0x823349196A6BA565Bb80050c9Ebbf233798c6FF9";
+const address = "0x7fBdF769914752c5fB2039C06006e4a1b442B19A";
 const abi = [
   {
     inputs: [{ internalType: "uint256", name: "_centerId", type: "uint256" }],
@@ -13,12 +13,13 @@ const abi = [
     inputs: [
       { internalType: "uint256", name: "_farmerId", type: "uint256" },
       { internalType: "uint256", name: "_quantity", type: "uint256" },
+      { internalType: "uint256", name: "fatPercent", type: "uint256" },
     ],
     name: "addMilk",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
-    signature: "0xc5c1b3b5",
+    signature: "0xbcea3e48",
   },
   {
     inputs: [],
@@ -49,7 +50,7 @@ const abi = [
   {
     inputs: [{ internalType: "uint256", name: "_farmerId", type: "uint256" }],
     name: "getDataByID",
-    outputs: [{ internalType: "uint256[2][]", name: "", type: "uint256[2][]" }],
+    outputs: [{ internalType: "uint256[3][]", name: "", type: "uint256[3][]" }],
     stateMutability: "view",
     type: "function",
     constant: true,

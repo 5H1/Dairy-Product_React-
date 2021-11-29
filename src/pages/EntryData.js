@@ -1,6 +1,6 @@
 import web3 from "./web3";
 
-const address = "0x5803406eA52C3bC98810523a015EE69d8B2B125A";
+const address = "0x9176bc768331c1096b3D4D8906c26f99ef2eE032";
 const abi = [
   {
     inputs: [
@@ -41,11 +41,12 @@ const abi = [
   },
   {
     inputs: [],
-    name: "outOfProcessing",
+    name: "prevData",
     outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
-    signature: "0x5ba89e3e",
+    constant: true,
+    signature: "0x78f7b8aa",
   },
   {
     inputs: [],
@@ -54,6 +55,22 @@ const abi = [
     stateMutability: "nonpayable",
     type: "function",
     signature: "0xc2418f8f",
+  },
+  {
+    inputs: [],
+    name: "setMilktoZero",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+    signature: "0x8cccaa38",
+  },
+  {
+    inputs: [{ internalType: "string", name: "info", type: "string" }],
+    name: "setPrevData",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "nonpayable",
+    type: "function",
+    signature: "0xb5dad3a7",
   },
 ];
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import web3 from "./web3";
 import data from "./EntryData";
+import Exdata from "./ExitData";
+import { Form, Button, InputGroup, FormControl, Table } from "react-bootstrap";
 
 function Entry(props) {
   var [quantity, setQuantity] = useState();
@@ -10,8 +12,6 @@ function Entry(props) {
   var [history, setHistory] = useState("");
   var [id, setId] = useState();
 
-
-  
   useEffect(async () => {
     var Tm = await data.methods.getTotalQuantity().call();
     setMilk(Tm);
@@ -23,6 +23,7 @@ function Entry(props) {
     // console.log(accounts[0]);
     setMessage("Please Wait...");
     await data.methods.addMilk(centerId, quantity).send({ from: accounts[0] });
+    await Exdata.methods.addMilk(quantity).send({ from: accounts[0] });
     setMessage("Milk Entered Successfully ✓✓");
   };
 
@@ -34,17 +35,34 @@ function Entry(props) {
       .getDataByCenterID(id)
       .call({ from: accounts[0] });
     setHistory([]);
-    if (res.length == 0) {
-      setHistory("No Data Found");
-    } else {
-      var temp = "";
-      res.forEach((element) => {
-        temp +=
-          timeConverter(element[0]) + " : " + element[1] + " litres" + " | ";
-      });
-      // console.log(temp);
-      setHistory(temp);
-    }
+    const val = (
+      <Table
+        striped
+        bordered
+        hover
+        style={{ width: "600px", marginLeft: "30px" }}
+      >
+        <thead>
+          <tr>
+            <th> Time </th>
+            <th> Quantity </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {res.map((row, pos) => {
+            return (
+              <tr>
+                <td>{timeConverter(row[0])}</td>
+                <td>{row[1]}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    );
+
+    setHistory(val);
   };
 
   function timeConverter(UNIX_timestamp) {
@@ -90,39 +108,67 @@ function Entry(props) {
   return (
     <body>
       <div>
-          <p>{props.data}</p>
+        <p>{props.data}</p>
         <p>Total Milk: {milk}</p>
         <hr />
 
-        <form onSubmit={onEnter}>
-          <div>
-            <label>Enter ID of the Collection Center </label>
-            <input
+        <Form
+          style={{
+            width: 700,
+            padding: 30,
+          }}
+          onSubmit={onEnter}
+        >
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">
+              Collection Center ID
+            </InputGroup.Text>
+            <FormControl
+              placeholder="Enter ID of the Center"
+              aria-label="Farmer ID"
               value={centerId}
               onChange={(e) => setCenterId(e.target.value)}
             />
-            <br />
-            <label class="special">Enter Milk Quantity </label>
-            <input
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">Milk Quantity</InputGroup.Text>
+            <FormControl
+              placeholder="Enter Milk Quantity"
+              aria-label="Quantity"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
             />
-            <br />
-            <button>ENTER</button>
-          </div>
-        </form>
+          </InputGroup>
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
         <p style={{ color: "green" }}>{message}</p>
-        <form onSubmit={getHistory}>
-          <h4>Get history of a Collection Center</h4>
-          <label>Enter ID of the Collection Center </label>
-          <input value={id} onChange={(e) => setId(e.target.value)} />
-          <br />
-          <button>SUBMIT</button>
-        </form>
+
+        <Form
+          style={{ width: 700, padding: 30 }}
+          onSubmit={getHistory}>
+          <h4>Get History of Collection Center</h4>
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">Collection Center ID</InputGroup.Text>
+            <FormControl
+              placeholder="Enter Center ID"
+              aria-label="Farmer ID"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+            />
+          </InputGroup>
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
         <div id="found">{history}</div>
         <hr />
-        <button onClick={props.temp}>Send Into</button>
-        <button onClick={props.temp2}>Send Out</button>
+        <Button onClick={props.temp} className="Ebutton">Send Into</Button>
+        <Button onClick={props.temp2} className="Ebutton">Send Out</Button>
         <br />
         <div id="qrcode"></div>
       </div>

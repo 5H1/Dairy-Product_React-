@@ -1,7 +1,7 @@
 import web3 from "./web3";
 // import JSON from "JSON";
 
-const address = "0x88eF8f6FeAaD3b3c5c2a3Ae7A1E655f798368049";
+const address = "0xa59b4D36c5c6276c3FF800541d113773F834b306";
 const abi = [
   {
     inputs: [{ internalType: "uint256", name: "quantity", type: "uint256" }],
@@ -47,6 +47,23 @@ const abi = [
     stateMutability: "nonpayable",
     type: "function",
     signature: "0xef082838",
+  },
+  {
+    inputs: [],
+    name: "prevData",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+    constant: true,
+    signature: "0x78f7b8aa",
+  },
+  {
+    inputs: [{ internalType: "string", name: "info", type: "string" }],
+    name: "setPrevData",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+    signature: "0xb5dad3a7",
   },
   {
     inputs: [],
