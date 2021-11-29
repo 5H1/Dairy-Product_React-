@@ -1,7 +1,7 @@
 import web3 from "./web3";
 // import JSON from "JSON";
 
-const address = "0xa59b4D36c5c6276c3FF800541d113773F834b306";
+const address = "0x56415B3ee7DFcB2fE1baE26d5d5dDd5fda49158c";
 const abi = [
   {
     inputs: [{ internalType: "uint256", name: "quantity", type: "uint256" }],

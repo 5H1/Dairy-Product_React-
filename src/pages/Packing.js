@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import web3 from "./web3";
 import data from "./PackingData";
-import { Form, Button, InputGroup, FormControl } from "react-bootstrap";
 
 function Packing(props) {
   var [id, setId] = useState();
@@ -43,7 +42,7 @@ function Packing(props) {
     event.preventDefault();
     // console.log(id);
     const accounts = await web3.eth.getAccounts();
-    const res = await data.methods.getDataByID(id).call({ from: accounts[0] });
+    const res = await data.methods.getDataById(id).call({ from: accounts[0] });
     setHistory([]);
     if (res.length == 0) {
       setHistory("No Data Found");
@@ -66,8 +65,8 @@ function Packing(props) {
       .delivaryTo(id, packets)
       .call({ from: accounts[0] });
     setDMessage("Delivered Successfully ✓✓");
-    // console.log(res);
-    props.temp(res);
+    console.log(res);
+    // props.temp(res);
   };
 
   function timeConverter(UNIX_timestamp) {
@@ -103,23 +102,8 @@ function Packing(props) {
       <p>No of Packets : {noOfPackets}</p>
       <hr />
 
-      <Form style={{ width: 700, padding: 30 }} onSubmit={onEnter}>
-        <InputGroup className="mb-3">
-          <InputGroup.Text id="basic-addon1">Milk Quantity</InputGroup.Text>
-          <FormControl
-            placeholder="Enter Milk Quantity"
-            aria-label="Farmer ID"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-        </InputGroup>
 
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </Form>
-
-      {/* <form onSubmit={onEnter}>
+      <form onSubmit={onEnter}>
         <div>
           <label>Enter milk quantity </label>
           <input
@@ -129,47 +113,13 @@ function Packing(props) {
           <br />
           <button>ENTER</button>
         </div>
-      </form> */}
+      </form>
       <p style={{ color: "green" }}>{message}</p>
-      <Button onClick={pack} style={{ marginLeft: "30px" }}>
-        Pack
-      </Button>
+      <button onClick={pack}>Pack</button>
       <p style={{ color: "green" }}>{pMessage}</p>
       <hr />
 
-      <Form
-        style={{
-          width: 700,
-          padding: 30,
-        }}
-        onSubmit={onEnter}
-      >
-        <InputGroup className="mb-3">
-          <InputGroup.Text id="basic-addon1">Agent ID</InputGroup.Text>
-          <FormControl
-            placeholder="Enter ID of Agent"
-            aria-label="Agent ID"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-          />
-        </InputGroup>
-
-        <InputGroup className="mb-3">
-          <InputGroup.Text id="basic-addon1">Packets</InputGroup.Text>
-          <FormControl
-            placeholder="No. of Packets"
-            aria-label="Packets"
-            value={packets}
-            onChange={(e) => setPackets(e.target.value)}
-          />
-        </InputGroup>
-
-        <Button variant="primary" type="submit" >
-          Deliver
-        </Button>
-      </Form>
-
-      {/* <form onSubmit={deliverMilk}>
+      <form onSubmit={deliverMilk}>
         <label>Enter ID of the Agent</label>
         <input value={id} onChange={(e) => setId(e.target.value)} />
         <br />
@@ -178,33 +128,15 @@ function Packing(props) {
         <br />
         <button>DELIVER</button>
       </form>
-      <p style={{ color: "green" }}>{dMessage}</p> */}
+      <p style={{ color: "green" }}>{dMessage}</p>
 
-      <hr />
-
-      <Form style={{ width: 700, padding: 30 }} onSubmit={getHistory}>
-        <h4>Get History Of a Agent</h4>
-        <InputGroup className="mb-3">
-          <InputGroup.Text id="basic-addon1">Agent ID</InputGroup.Text>
-          <FormControl
-            placeholder="Enter Agent ID"
-            aria-label="Agent ID"
-            value={idD} onChange={(e) => setIdD(e.target.value)}
-          />
-        </InputGroup>
-
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </Form>
-
-      {/* <form onSubmit={getHistory}>
+      <form onSubmit={getHistory}>
         <h4>Get history of a Agent</h4>
         <label>Enter ID of the Agent </label>
         <input value={idD} onChange={(e) => setIdD(e.target.value)} />
         <br />
         <button>SUBMIT</button>
-      </form> */}
+      </form>
       <div id="found">{history}</div>
       <hr />
       <div id="qrcode"></div>
